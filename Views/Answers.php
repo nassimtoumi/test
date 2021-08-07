@@ -1,4 +1,9 @@
-
+<?php
+require '../Controller/replyC.php';
+//require_once '../config.php';
+$replyC = new replyC();
+$listreplys=$replyC->afficherReply();
+?>
 
 
 <!DOCTYPE html>
@@ -79,6 +84,38 @@
 					<!--============= AUTOR-COVER END =============-->
 					
 					<div class="reviews">
+					<?php
+						foreach ($listreplys as $reply) {
+							$reolyid = $reply['id_reply'];
+							$type = -1;
+							$userid = $_SESSION['id'];
+							$db11 = config::getConnexion();
+							// Checking user status
+							$sql1 = "SELECT count(*) as cntStatus,type FROM like_unlike WHERE userid=".$userid." and replyid=".$replyid;
+							$queryid1  = $db1->prepare($sql1);
+							$queryid1->execute();
+							$status_row1 = $queryid1->fetch();							
+							$count_status1 = $status_row1['cntStatus'];
+							if($count_status1 > 0){
+								$type1 = $status_row1['type'];
+							}
+
+							// Count post total likes and unlikes
+							$like_query1 = "SELECT COUNT(*) AS cntLikes FROM like_unlike WHERE type=1 and replyid=".$postid;
+							$db21 = config::getConnexion();
+							$query1 = $db21->prepare($like_query1);
+							$query1->execute();							
+							$like_row1 = $query1->fetch();
+							$total_likes1 = $like_row1['cntLikes'];
+		
+							$unlike_query1 = "SELECT COUNT(*) AS cntUnlikes FROM like_unlike WHERE type=0 and replyid=".$postid;
+							$db31 = config::getConnexion();
+							$query1 = $db31->prepare($unlike_query1);
+							$query1->execute();							
+							$unlike_row1 = $query1->fetch();
+							$total_unlikes1 = $unlike_row1['cntUnlikes'];
+						?>
+						
 						<h2 class="title">Comments</h2>
 						<ul class="reviews-list">
 							<li class="item">
@@ -88,28 +125,20 @@
 										<h6 class="name">Ella Bryan</h6>
 										<div class="date"><i class="fa fa-calendar" aria-hidden="true"></i>Dec 26, 2019</div>
 										<p class="review-comment">Non odio euismod lacinia at quis. Auctor augue mauris augue neque gravida. Mauris commodo quis imperdiet massa tincidunt nunc pulvinar. In tellus integer feugiat scelerisque varius morbi enim.</p>
-										<a href="#" class="review-btn"><i class="fa fa-thumbs-up" aria-hidden="true"></i> like</a>
+										<span class="post-comment"><i class="fa fa-thumbs-up" aria-hidden="true"></i><input type="button" value="Like" id="like_<?php echo $postid; ?>" class="like" style="<?php if($type == 1){ echo "color: #f23849;"; } ?>" />&nbsp;<span id="likes_<?php echo $postid; ?>"><?php echo $total_likes; ?></span>&nbsp;</span>
 										<a href="#" class="review-btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Report</a>
 										<a href="#" class="review-btn"><i class="fa fa-reply" aria-hidden="true"></i> Reply</a>
 									</div>
 								</div>
-								<ul class="child">
-									<li class="item">
-										<div class="review-item">
-											<div class="review-avatar"><img src="assets/img/comments-photo-2.png" alt="img"></div>
-											<div class="review-content">
-												<h6 class="name">Richard Spencer </h6>
-												<div class="date"><i class="fa fa-calendar" aria-hidden="true"></i>Dec 27, 2019</div>
-												<p class="review-comment">n tellus integer feugiat scelerisque varius morbi enim.</p>
-												<a href="#" class="review-btn"><i class="fa fa-thumbs-up" aria-hidden="true"></i> like</a>
-										<a href="#" class="review-btn"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Report</a>
-										<a href="#" class="review-btn"><i class="fa fa-reply" aria-hidden="true"></i> Reply</a>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</li>
-						</ul>
+								
+								
+
+								<?php
+					}					
+						?>
+
+
+
 						<div class="reviews-form">
 							<h2 class="title">Leave a Comment</h2>
 							<form action="ajouterReply.php?postid=<?php echo $_GET['postid']?>"  method="POST" >

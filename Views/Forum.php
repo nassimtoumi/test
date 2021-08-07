@@ -151,6 +151,9 @@ include 'includes/head.php'?>
 							</div>
 							<a href="Answers.php?postid=<?php echo $postid ?>" class="btn"><span>read more</span></a>
 						</div>
+								<?php
+					}					
+						?>
 					</div>
 					
 					<div class="post-item-cover">
@@ -159,9 +162,7 @@ include 'includes/head.php'?>
 								<!----here--->
 							</div>
 						</div>
-							<?php
-					}					
-						?>
+					
 						
 						<div class="post-footer">
 				
